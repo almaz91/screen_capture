@@ -1,8 +1,8 @@
 #include "hwndToMat.h"
 
 HwndToMat::HwndToMat(HWND hwindow, float scale)
+    : hwnd(hwindow) 
 {
-    this->hwnd = hwindow;
     this->hwindowDC = GetDC(this->hwnd);                                        
     this->hwindowCompatibleDC = CreateCompatibleDC(this->hwindowDC);           
     SetStretchBltMode(this->hwindowCompatibleDC, COLORONCOLOR);
@@ -32,20 +32,15 @@ HwndToMat::HwndToMat(HWND hwindow, float scale)
     this->bi.biClrImportant = 0;
 
     SelectObject(this->hwindowCompatibleDC, this->hbwindow);
-    this->Read();
 };
 
-void HwndToMat::Read()
+cv::Mat HwndToMat::Read()
 {
     // copy from the window device context to the bitmap device context
-    StretchBlt(this->hwindowCompatibleDC, 0, 0, this->width, this->height, this->hwindowDC, 0, 0, this->srcwidth, this->srcheight, SRCCOPY); //change SRCCOPY to NOTSRCCOPY for wacky colors !
+    StretchBlt(this->hwindowCompatibleDC, 0, 0, this->width, this->height, this->hwindowDC, 0, 0, this->srcwidth, this->srcheight, SRCCOPY); //change SRCCOPY to NOTSRCCOPY for wacky colors
     GetDIBits(this->hwindowCompatibleDC, this->hbwindow, 0, this->height, this->image.data, (BITMAPINFO*)&(this->bi), DIB_RGB_COLORS);  //copy from hwindowCompatibleDC to hbwindow
-};
-
-cv::Mat HwndToMat::GetImage()
-{
     return this->image;
-}
+};
 
 HwndToMat::~HwndToMat()
 {

@@ -7,7 +7,7 @@ VideoWriter::VideoWriter(std::unique_ptr<HwndToMat>&& capDesktop) :
 
 bool VideoWriter::Open()
 {
-    cv::Mat desktopImage = this->capDesktop->GetImage();
+    cv::Mat desktopImage = this->capDesktop->Read();
     
     std::string filename = "./" + std::to_string(desktopImage.cols) + "x" + std::to_string(desktopImage.rows) + ".yuv";
     int codec = cv::VideoWriter::fourcc('Y', 'V', '1', '2');
@@ -31,8 +31,7 @@ void VideoWriter::Write(std::chrono::seconds seconds)
     {
         cv::Mat yuvImg;
 
-        this->capDesktop->Read();
-        auto capDesktopImage = this->capDesktop->GetImage();
+        auto capDesktopImage = this->capDesktop->Read();
 
         cv::cvtColor(capDesktopImage, yuvImg, cv::COLOR_BGR2YUV);
         writer << yuvImg;

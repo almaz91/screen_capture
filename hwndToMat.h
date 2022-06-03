@@ -8,8 +8,7 @@ class HwndToMat
 public:
     HwndToMat(HWND hwindow, float scale = 1);
     ~HwndToMat();
-    void Read();
-    cv::Mat GetImage();
+    cv::Mat Read();
 
 private:
     cv::Mat image;
